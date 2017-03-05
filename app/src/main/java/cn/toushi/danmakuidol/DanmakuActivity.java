@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,6 +79,8 @@ public class DanmakuActivity extends AppCompatActivity {
     Toolbar toolbar;
     @InjectView(R.id.toolbar_layout)
     AppBarLayout toolbarLayout;
+    @InjectView(R.id.danmaku_content)
+    DrawerLayout danmakuContent;
 
     private BaseDanmakuParser mParser;
     public String path;
@@ -99,6 +103,7 @@ public class DanmakuActivity extends AppCompatActivity {
         initDanmakuEngine();
 
         danmakuPlay.setImageResource(R.drawable.ic_pause_black_24dp);
+
     }
 
 
@@ -208,16 +213,23 @@ public class DanmakuActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.danmaku_play)
-    public void onClick() {
-        if(mediaPlayer.isPlaying()){
-            mediaPlayer.pause();
-            danmakuHontai.pause();
-            danmakuPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
-        }else{
-            mediaPlayer.start();
-            danmakuHontai.resume();
-            danmakuPlay.setImageResource(R.drawable.ic_pause_black_24dp);
+    @OnClick({R.id.danmaku_content, R.id.danmaku_play})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.danmaku_content:
+                Toast.makeText(this, "啦啦啦", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.danmaku_play:
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    danmakuHontai.pause();
+                    danmakuPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                } else {
+                    mediaPlayer.start();
+                    danmakuHontai.resume();
+                    danmakuPlay.setImageResource(R.drawable.ic_pause_black_24dp);
+                }
+                break;
         }
     }
 
