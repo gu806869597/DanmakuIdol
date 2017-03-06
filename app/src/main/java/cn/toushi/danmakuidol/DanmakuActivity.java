@@ -63,7 +63,7 @@ import master.flame.danmaku.ui.widget.DanmakuView;
  * 作者： jimhao
  * 创建于： 2017/3/5
  * 包名： cn.toushi.danmakuidol
- * 文档描述：
+ * 文档描述： 放牧播放器
  */
 
 public class DanmakuActivity extends AppCompatActivity {
@@ -248,9 +248,7 @@ public class DanmakuActivity extends AppCompatActivity {
         }
 
         @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-
-        }
+        public void surfaceDestroyed(SurfaceHolder holder) {}
     }
 
 
