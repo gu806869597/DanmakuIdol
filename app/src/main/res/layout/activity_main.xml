@@ -18,7 +18,7 @@
                 android:id="@+id/main_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="?attr/actionBarSize">
+                android:layout_marginTop="?attr/actionBarSize">
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/main_list"
                     android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|bottom"
-                android:layout_margin="15dp"
+                android:layout_margin="10dp"
                 tools:targetApi="N_MR1"
                 android:src="@drawable/ic_add_black_24dp"
                 android:id="@+id/main_addButton"

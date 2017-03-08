@@ -10,6 +10,7 @@ import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout mainRefresh;
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
+    @InjectView(R.id.toolbar_layout)
+    AppBarLayout toolbarLayout;
 
     private FileDisplayAdapter adapter;
 
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         loadPhoneVideoData();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -109,15 +113,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onHide() {
-            toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
-            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) toolbar.getLayoutParams();
+            toolbarLayout.animate().translationY(-toolbarLayout.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) toolbarLayout.getLayoutParams();
             int fabBottomMargin = lp.bottomMargin;
-            mainAddButton.animate().translationY(mainAddButton.getHeight()+fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+            mainAddButton.animate().translationY(mainAddButton.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
         }
 
         @Override
         public void onShow() {
-            toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+            toolbarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
             mainAddButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         }
     }
@@ -125,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 列表点击事件
      */
-    class OnFileItemClickListener implements cn.toushi.danmakuidol.adapter.OnFileItemClickListener{
+    class OnFileItemClickListener implements cn.toushi.danmakuidol.adapter.OnFileItemClickListener {
 
         @Override
         public void onItemClick(int position, View view) {
@@ -133,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
             String path = beans.getPath();
             String title = beans.getName();
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this,DanmakuActivity.class);
+            intent.setClass(MainActivity.this, DanmakuActivity.class);
             intent.putExtra("FilePath", path);
-            intent.putExtra("FileTitle",title);
+            intent.putExtra("FileTitle", title);
             startActivity(intent);
         }
     }

@@ -1,5 +1,6 @@
 package cn.toushi.danmakuidol.adapter;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
@@ -17,6 +18,14 @@ public abstract class OnFileListScrollListener extends RecyclerView.OnScrollList
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+        int firstViewVisible = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+
+        if(firstViewVisible == 0){
+            if(!controlsVisible){
+                onShow();
+                controlsVisible = true;
+            }
+        }
         if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
             onHide();
             controlsVisible = false;
