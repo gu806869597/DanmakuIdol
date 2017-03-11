@@ -22,7 +22,9 @@
         <activity android:name=".DanmakuActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape"
+            android:hardwareAccelerated="true"
             />
+
     </application>
 
 </manifest>

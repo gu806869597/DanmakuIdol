@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="60dp"
     android:background="#7f000000"
     android:paddingLeft="7dp"
+    android:paddingRight="7dp"
     android:layout_gravity="bottom"
     android:id="@+id/danmaku_controller">
     <ImageButton
@@ -15,4 +21,35 @@
         android:scaleType="centerCrop"
         android:layout_centerVertical="true"/>
 
+    <ImageButton
+        android:id="@+id/danmaku_display"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="#0000"
+        android:src="@drawable/ic_visibility_black_24dp" />
+    <TextView
+        android:id="@+id/danmaku_play_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="本地播放"
+        android:textSize="14sp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/danmaku_display"
+        android:textColor="#fff"
+        android:layout_marginRight="15dp"/>
+    <Button
+        android:id="@+id/danmaku_send_btn"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/send_danmaku_btn_drawable"
+        android:layout_toRightOf="@id/danmaku_play"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/danmaku_play_type"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="发射弹幕"
+        android:textSize="15sp"
+        android:textColor="#fff"/>
 </RelativeLayout>

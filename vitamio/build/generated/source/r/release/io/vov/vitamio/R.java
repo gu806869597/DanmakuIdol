@@ -13,7 +13,8 @@ public final class R {
     public static final class color {
         public static int mediacontroller_bg=0x7f050000;
         public static int mediacontroller_bg_pressed=0x7f050001;
-        public static int transparent=0x7f050002;
+        public static int send_btn_bg=0x7f050002;
+        public static int transparent=0x7f050003;
     }
     public static final class drawable {
         public static int mediacontroller_button=0x7f020000;

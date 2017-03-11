@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -24,8 +23,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -63,7 +65,7 @@ import master.flame.danmaku.ui.widget.DanmakuView;
  * 作者： jimhao
  * 创建于： 2017/3/5
  * 包名： cn.toushi.danmakuidol
- * 文档描述： 放牧播放器
+ * 文档描述： 弹幕播放器
  */
 
 public class DanmakuActivity extends AppCompatActivity {
@@ -80,7 +82,13 @@ public class DanmakuActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar_layout)
     AppBarLayout toolbarLayout;
     @InjectView(R.id.danmaku_content)
-    DrawerLayout danmakuContent;
+    FrameLayout danmakuContent;
+    @InjectView(R.id.danmaku_display)
+    ImageButton danmakuDisplay;
+    @InjectView(R.id.danmaku_play_type)
+    TextView danmakuPlayType;
+    @InjectView(R.id.danmaku_send_btn)
+    Button danmakuSendBtn;
 
     private BaseDanmakuParser mParser;
     public String path;
@@ -88,12 +96,13 @@ public class DanmakuActivity extends AppCompatActivity {
     public MediaPlayer mediaPlayer;
     public SurfaceHolder holder;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //隐藏状态栏
         this.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_danmaku);
         ButterKnife.inject(this);
 
@@ -101,7 +110,6 @@ public class DanmakuActivity extends AppCompatActivity {
 
         path = getIntent().getStringExtra("FilePath");
         initDanmakuEngine();
-
         danmakuPlay.setImageResource(R.drawable.ic_pause_black_24dp);
 
     }
@@ -173,13 +181,19 @@ public class DanmakuActivity extends AppCompatActivity {
                 }
             });
             danmakuHontai.prepare(mParser, mContext);
-            danmakuHontai.showFPS(false);
+            danmakuHontai.showFPS(true);
             danmakuHontai.enableDanmakuDrawingCache(true);
             ((View) danmakuHontai).setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
-                    danmakuController.setVisibility(View.VISIBLE);
+                    if (danmakuController.getVisibility() == View.VISIBLE) {
+                        danmakuController.setVisibility(View.GONE);
+                        toolbarLayout.setVisibility(View.GONE);
+                    } else {
+                        danmakuController.setVisibility(View.VISIBLE);
+                        toolbarLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }
@@ -205,7 +219,7 @@ public class DanmakuActivity extends AppCompatActivity {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     mediaPlayer.start();
-                    mediaPlayer.setLooping(true);
+                    mediaPlayer.setLooping(false);
                 }
             });
         } catch (IOException e) {
@@ -213,26 +227,64 @@ public class DanmakuActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.danmaku_content, R.id.danmaku_play})
+
+    /**
+     * 控制播放相关
+     */
+    public void playController() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            danmakuHontai.pause();
+            danmakuPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+        } else {
+            mediaPlayer.start();
+            danmakuHontai.resume();
+            danmakuPlay.setImageResource(R.drawable.ic_pause_black_24dp);
+        }
+    }
+
+    boolean isVisible = false ;
+
+    /**
+     * 处理点击事件
+     * @param view
+     */
+    @OnClick({R.id.danmaku_play, R.id.danmaku_display, R.id.danmaku_play_type, R.id.danmaku_send_btn})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.danmaku_content:
-                Toast.makeText(this, "啦啦啦", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.danmaku_play:
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    danmakuHontai.pause();
-                    danmakuPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
-                } else {
-                    mediaPlayer.start();
-                    danmakuHontai.resume();
-                    danmakuPlay.setImageResource(R.drawable.ic_pause_black_24dp);
+                playController();
+                break;
+            case R.id.danmaku_display:
+                if(isVisible){
+                    danmakuIsVisible(true);
+                    isVisible = false ;
+                    danmakuDisplay.setImageResource(R.drawable.ic_visibility_black_24dp);
+                }else{
+                    danmakuIsVisible(false);
+                    isVisible = true ;
+                    danmakuDisplay.setImageResource(R.drawable.ic_visibility_off_black_24dp);
                 }
+                break;
+            case R.id.danmaku_play_type:
+                break;
+            case R.id.danmaku_send_btn:
+                addDanmaku(false);
                 break;
         }
     }
 
+    /**
+     * 弹幕是否显示
+     * @param flag 标记
+     */
+    public void danmakuIsVisible(boolean flag){
+        mContext.setFBDanmakuVisibility(flag);
+        mContext.setSpecialDanmakuVisibility(flag);
+        mContext.setFTDanmakuVisibility(flag);
+        mContext.setL2RDanmakuVisibility(flag);
+        mContext.setR2LDanmakuVisibility(flag);
+    }
     /**
      * SurfaceHolder的状态监听
      */
@@ -248,7 +300,8 @@ public class DanmakuActivity extends AppCompatActivity {
         }
 
         @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {}
+        public void surfaceDestroyed(SurfaceHolder holder) {
+        }
     }
 
 
@@ -383,6 +436,7 @@ public class DanmakuActivity extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
             danmakuHontai = null;
+
         }
     }
 
@@ -418,11 +472,9 @@ public class DanmakuActivity extends AppCompatActivity {
         if (danmaku == null || danmakuHontai == null) {
             return;
         }
-        // for(int i=0;i<100;i++){
-        // }
         danmaku.text = "这是一条弹幕" + System.nanoTime();
         danmaku.padding = 5;
-        danmaku.priority = 0;  // 可能会被各种过滤器过滤并隐藏显示
+        danmaku.priority = 1;  // 可能会被各种过滤器过滤并隐藏显示
         danmaku.isLive = islive;
         danmaku.time = danmakuHontai.getCurrentTime() + 1200;
         danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
@@ -431,7 +483,7 @@ public class DanmakuActivity extends AppCompatActivity {
         // danmaku.underlineColor = Color.GREEN;
         danmaku.borderColor = Color.GREEN;
         danmakuHontai.addDanmaku(danmaku);
-
+        Toast.makeText(this, "发送成功", Toast.LENGTH_SHORT).show();
     }
 
     private void addDanmaKuShowTextAndImage(boolean islive) {

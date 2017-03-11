@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("弹幕播放器O(∩_∩)O~");
         setSupportActionBar(toolbar);
         loadPhoneVideoData();
+
+        mainRefresh.setRefreshing(false);
     }
 
     @Override
@@ -109,13 +111,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //视频列表滚动处理
     class OnFileItemScrollListener extends OnFileListScrollListener {
 
         @Override
         public void onHide() {
             toolbarLayout.animate().translationY(-toolbarLayout.getHeight()).setInterpolator(new AccelerateInterpolator(2));
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) toolbarLayout.getLayoutParams();
-            int fabBottomMargin = lp.bottomMargin;
+            int fabBottomMargin = lp.bottomMargin+100;
             mainAddButton.animate().translationY(mainAddButton.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
         }
 
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             String name = cursor.getString(1);
             String path = cursor.getString(2);
             long duration = cursor.getLong(3);
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");//初始化Formatter的转换格式。
+            SimpleDateFormat formatter = new SimpleDateFormat("mm:ss");//初始化Formatter的转换格式。
 
             String hms = formatter.format(duration);
             //封面
